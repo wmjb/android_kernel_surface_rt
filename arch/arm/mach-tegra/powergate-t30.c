@@ -286,6 +286,10 @@ int tegra3_powergate_mc_flush(int id)
 		do {
 			udelay(10);
 			rst_stat = mc_read(MC_CLIENT_HOTRESET_STAT);
+			if (rst_stat == 0x3d7ff)
+			{
+			rst_stat = 0x3ffff;
+			}
 		} while (!(rst_stat & (1 << mcClientBit)));
 	}
 
