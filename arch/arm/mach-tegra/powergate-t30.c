@@ -286,10 +286,17 @@ int tegra3_powergate_mc_flush(int id)
 		do {
 			udelay(10);
 			rst_stat = mc_read(MC_CLIENT_HOTRESET_STAT);
-			if (rst_stat == 0x3d7ff)
-			{
-			rst_stat = 0x3ffff;
-			}
+			
+		///	HACK TO BOOT ON CURRENT UEFI CHAINLOAD           
+			//pr_info("MC_CLIENT_HOTRESET_STAT tegra3_powergate_mc_flush int: %d  - idx:%x :rst_stat =  %x : rst_ctrl = %x\n",id,idx,rst_stat,rst_ctrl);
+			
+          		if (rst_stat == 0x3d7ff && id == 13)
+          	  	{
+          			rst_stat = 0x3e7ff;
+         	  	}
+		///	
+			
+			
 		} while (!(rst_stat & (1 << mcClientBit)));
 	}
 
