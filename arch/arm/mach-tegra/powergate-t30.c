@@ -295,11 +295,13 @@ int tegra3_powergate_mc_flush(int id)
 			if (rst_stat == 0x3d7ff && id == 13)
 			{
 
-			if (hotResetTries > 10) break;
+			if (hotResetTries > 10) 
+				{
 
-			pr_info("MC_CLIENT_HOTRESET_STAT tegra3_powergate_mc_flush int: %d  - idx:%x :rst_stat =  %x : rst_ctrl = %x : mcClientBit = %d  - match \n",id,idx,rst_stat,rst_ctrl,mcClientBit);
+				pr_info("MC_CLIENT_HOTRESET_STAT tegra3_powergate_mc_flush int: %d  - idx:%x :rst_stat =  %x : rst_ctrl = %x : mcClientBit = %d  - match \n",id,idx,rst_stat,rst_ctrl,mcClientBit);
 
-			rst_stat = 0x3ffff;
+				rst_stat = 0x3ffff;
+				}
 
 			hotResetTries++;
 
