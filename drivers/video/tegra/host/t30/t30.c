@@ -124,7 +124,7 @@ struct nvhost_device_data t30_gr3d_info = {
 	.powergate_ids = { TEGRA_POWERGATE_3D,
 			   TEGRA_POWERGATE_3D1 },
 	NVHOST_DEFAULT_CLOCKGATE_DELAY,
-	.can_powergate = true,
+	.can_powergate = false,
 	.powerup_reset = true,
 	.powergate_delay = 250,
 	.moduleid	= NVHOST_MODULE_NONE,
