@@ -3658,13 +3658,16 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 		 ((reg & WM8962_CHIP_REV_MASK) >> WM8962_CHIP_REV_SHIFT)
 		 + 'A');
 
+	dev_info(&i2c->dev, "debug line 1 \n");
 	regcache_cache_bypass(wm8962->regmap, false);
+        dev_info(&i2c->dev, "debug line 2 \n");
 
 	ret = wm8962_reset(wm8962);
 	if (ret < 0) {
 		dev_err(&i2c->dev, "Failed to issue reset\n");
 		goto err_regmap;
 	}
+        dev_info(&i2c->dev, "debug line 3 \n");
 
 	if (pdata && pdata->in4_dc_measure) {
 		ret = regmap_register_patch(wm8962->regmap,
@@ -3675,19 +3678,28 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 				"Failed to configure for DC mesurement: %d\n",
 				ret);
 	}
+        dev_info(&i2c->dev, "debug line 4 \n");
 
 	pm_runtime_enable(&i2c->dev);
+        dev_info(&i2c->dev, "debug line 5 \n");
+
 	pm_request_idle(&i2c->dev);
+        dev_info(&i2c->dev, "debug line 6\n");
 
 	ret = snd_soc_register_codec(&i2c->dev,
 				     &soc_codec_dev_wm8962, &wm8962_dai, 1);
+        dev_info(&i2c->dev, "debug line 7\n");
+
 	if (ret < 0)
 		goto err_regmap;
+        dev_info(&i2c->dev, "debug line 8\n");
 
 	regcache_cache_only(wm8962->regmap, true);
+        dev_info(&i2c->dev, "debug line 9 \n");
 
 	/* The drivers should power up as needed */
 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
+        dev_info(&i2c->dev, "debug line 10\n");
 
 	return 0;
 

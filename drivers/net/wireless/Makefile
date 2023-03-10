@@ -73,3 +73,4 @@ obj-$(CONFIG_SD8797)	+= sd8797/
 obj-$(CONFIG_SD8897)	+= sd8897/
 obj-$(CONFIG_RTL8821CU)	+= rtl8821CU/
 obj-$(CONFIG_SD8797_AOSP)	+= wlan_src/
+obj-$(CONFIG_MWLAN)	+= mwlan/

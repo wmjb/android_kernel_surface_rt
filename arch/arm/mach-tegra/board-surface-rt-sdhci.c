@@ -23,12 +23,11 @@
 #include <mach/iomap.h>
 #include <mach/sdhci.h>
 
-#include "gpio-names.h"
-#include "board-surface-rt.h"
 #include <mach/pinmux.h>
 #include <mach/pinmux-tegra30.h>
 
-
+#include <linux/mbtc_plat.h>
+#include <linux/wl12xx.h>
 
 #include <mach/gpio-tegra.h>
 #include <mach/io_dpd.h>
@@ -41,9 +40,15 @@
 #include <linux/resource.h>
 
 
+#include "dvfs.h"
+#include "fuse.h"
+#include "gpio-names.h"
+#include "board-surface-rt.h"
+
+
 #define TEGRA_WLAN_PWR	TEGRA_GPIO_PD4
 #define TEGRA_WLAN_RST	TEGRA_GPIO_PD3
-#define TEGRA_WLAN_WOW	TEGRA_GPIO_PO4
+//#define TEGRA_WLAN_WOW	TEGRA_GPIO_PO4
 
 static void (*wifi_status_cb)(int card_present, void *dev_id);
 static void *wifi_status_cb_devid;
@@ -58,6 +63,13 @@ static struct wifi_platform_data tegra_wifi_control = {
 	.set_power      = tegra_wifi_power,
 	.set_reset      = tegra_wifi_reset,
 	.set_carddetect = tegra_wifi_set_carddetect,
+//	.host_sleep_cond = 0xa, /* UNICAST + MULTICAST */
+			        /* bit 0: broadcast, 1: unicast, 2: mac,
+			               3: multicast, 6: mgmt frame,
+				       31: don't wakeup on ipv6 */
+//	.host_sleep_gpio = 16,  /* GPIO 16 */
+//	.host_sleep_gap	= 0xff,  /* level trigger */
+
 };
 
 static void set_pin_pupd_input(int pin , int pupd , int input)
@@ -129,81 +141,6 @@ static int disable_wifi_sdio_func(void)
 }
 
 
-static int tegra_wifi_power(int on)
-{
-	//struct tegra_io_dpd *sd_dpd;
-
-	pr_debug("%s: %d\n", __func__, on);
-
-	/*
-	 * FIXME : we need to revisit IO DPD code
-	 * on how should multiple pins under DPD get controlled
-	 *
-	 * enterprise GPIO WLAN enable is part of SDMMC1 pin group
-	 
-	sd_dpd = tegra_io_dpd_get(&tegra_sdhci_device2.dev);
-	if (sd_dpd) {
-		mutex_lock(&sd_dpd->delay_lock);
-		tegra_io_dpd_disable(sd_dpd);
-		mutex_unlock(&sd_dpd->delay_lock);
-	}
-///////////
-	if (on) {
-		gpio_set_value(TEGRA_WLAN_RST, 1);
-		mdelay(100);
-		gpio_set_value(TEGRA_WLAN_RST, 0);
-		mdelay(100);
-		gpio_set_value(TEGRA_WLAN_RST, 1);
-		mdelay(100);
-		gpio_set_value(TEGRA_WLAN_PWR, 1);
-		mdelay(200);
-	} else {
-		gpio_set_value(TEGRA_WLAN_RST, 0);
-		mdelay(100);
-		gpio_set_value(TEGRA_WLAN_PWR, 0);
-	}
-
-*/
-
-	if (on)
-	    gpio_direction_input(TEGRA_WLAN_WOW);
-	else
-	    gpio_direction_output(TEGRA_WLAN_WOW, 0);
-
-	if (on) {
-	
-		//gpio_direction_output(TEGRA_BT_RST, 1);
-		enable_wifi_sdio_func();
-		if (!gpio_get_value(TEGRA_WLAN_PWR)) {
-			gpio_set_value(TEGRA_WLAN_PWR, 1);
-		}
-	}
-	mdelay(100);
-	gpio_set_value(TEGRA_WLAN_RST, on);
-	mdelay(200);
-
-	/*
-	 * When BT and Wi-Fi turn off at the same time, the last one must do the VDD off action.
-	 * So BT/WI-FI must check the other's status in order to set VDD low at last.
-	 */
-	if (!on) {
-	
-		//if (!gpio_get_value(TEGRA_BT_SHUTDOWN)) {
-		//	gpio_direction_output(CTEGRA_BT_RST, 0);
-		//	gpio_set_value(TEGRA_WLAN_VDD, 0);
-		//}
-		disable_wifi_sdio_func();
-	}
-
-/*
-	if (sd_dpd) {
-		mutex_lock(&sd_dpd->delay_lock);
-		tegra_io_dpd_enable(sd_dpd);
-		mutex_unlock(&sd_dpd->delay_lock);
-	}
-*/
-	return 0;
-}
 
 static int tegra_wifi_reset(int on)
 {
@@ -261,8 +198,28 @@ static struct platform_device tegra_mrvl_wifi_device = {
 	.platform_data = &tegra_wifi_control,
 	},
 };
+//
+//static struct mbtc_platform_data tegra_mbtc_control = {
+//	.gpio_gap	= 0x04ff, /* GPIO 4, GAP 0xff (level) */
+//};
+/*
+static struct resource bt_resource[] = {
+	[0] = {
+		.name	= "mrvl_bt_irq",
+		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWLEVEL,
+	},
+};
 
-
+static struct platform_device tegra_bt_device = {
+	.name		= "mrvl_bt",
+	.id		= 1,
+	.num_resources	= ARRAY_SIZE(bt_resource),
+	.resource	= bt_resource,
+	.dev		= {
+		.platform_data = &tegra_mbtc_control,
+	},
+};
+*/
 
 static struct resource sdhci_resource0[] = {
 	[0] = {
@@ -303,6 +260,21 @@ static struct resource sdhci_resource3[] = {
 	},
 };
 
+static struct embedded_sdio_data embedded_sdio_data2 = {
+	.cccr   = {
+		.sdio_vsn       = 2,
+		.multi_block    = 1,
+		.low_speed      = 0,
+		.wide_bus       = 0,
+		.high_power     = 1,
+		.high_speed     = 1,
+	},
+	.cis  = {
+		.vendor	 = 0x02d0,
+		.device	 = 0x4329,
+	},
+};
+
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data0 = {
 	.cd_gpio = TEGRA_GPIO_PI5,
 	.wp_gpio = -1,
@@ -320,15 +292,24 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data0 = {
 
 
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = {
+        .mmc_data = {
+                .register_status_notify = tegra_wifi_status_register,
+                .built_in = 0,
+                .embedded_sdio = &embedded_sdio_data2,
+                .built_in = 0,
+                .ocr_mask = MMC_OCR_1V8_MASK,
+	},
+	.pm_flags = MMC_PM_KEEP_POWER,	
 	.cd_gpio = -1,
 	.wp_gpio = -1,
 	.power_gpio = -1,
-	.tap_delay = 0x0F,
-	.ddr_clk_limit = 41000000,
-	.mmc_data = {
-		.register_status_notify	= tegra_wifi_status_register,
-		.built_in = 0,
-	},
+	.tap_delay = 0x2,
+	.trim_delay = 0x2,
+	.ddr_clk_limit = 50000000,
+	.max_clk_limit = 100000000,
+	.uhs_mask = MMC_UHS_MASK_DDR50,
+	.edp_support = false,
+	
 };
 
 
@@ -344,9 +325,6 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = {
 		.ocr_mask = MMC_OCR_1V8_MASK,
 	}
 };
-
-
-
 
 
 static struct platform_device tegra_sdhci_device0 = {
@@ -379,6 +357,61 @@ static struct platform_device tegra_sdhci_device3 = {
 	},
 };
 
+static int tegra_wifi_power(int on)
+{
+        struct tegra_io_dpd *sd_dpd;
+
+        pr_debug("%s: %d\n", __func__, on);
+ 
+        sd_dpd = tegra_io_dpd_get(&tegra_sdhci_device2.dev);
+        if (sd_dpd) {
+                mutex_lock(&sd_dpd->delay_lock);
+                tegra_io_dpd_disable(sd_dpd);
+                mutex_unlock(&sd_dpd->delay_lock);
+        }
+        if (on) {
+                gpio_set_value(TEGRA_WLAN_RST, 1);
+                mdelay(100);
+                gpio_set_value(TEGRA_WLAN_RST, 0);
+                mdelay(100);
+                gpio_set_value(TEGRA_WLAN_RST, 1);
+                mdelay(100);
+                gpio_set_value(TEGRA_WLAN_PWR, 1);
+                mdelay(200);
+        } else {
+                gpio_set_value(TEGRA_WLAN_RST, 0);
+                mdelay(100);
+                gpio_set_value(TEGRA_WLAN_PWR, 0);
+        }
+//        if (on)
+//            gpio_direction_input(TEGRA_WLAN_WOW);
+
+//        else
+//            gpio_direction_output(TEGRA_WLAN_WOW, 0);
+        if (on) {
+                enable_wifi_sdio_func();
+                if (!gpio_get_value(TEGRA_WLAN_PWR)) {
+                        gpio_set_value(TEGRA_WLAN_PWR, 1);
+                }
+        }
+        mdelay(100);
+        gpio_set_value(TEGRA_WLAN_RST, on);
+        mdelay(200);
+        if (!on) {
+                disable_wifi_sdio_func();
+        }
+
+
+        if (sd_dpd) {
+                mutex_lock(&sd_dpd->delay_lock);
+                tegra_io_dpd_enable(sd_dpd);
+                mutex_unlock(&sd_dpd->delay_lock);
+        }
+
+        return 0;
+}
+
+
 static int __init tegra_wifi_init(void)
 {
 	int rc;
@@ -389,9 +422,9 @@ static int __init tegra_wifi_init(void)
 	rc = gpio_request(TEGRA_WLAN_RST, "wlan_rst");
 	if (rc)
 		pr_err("WLAN_RST gpio request failed:%d\n", rc);
-	rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
-	if (rc)
-		pr_err("WLAN_WOW gpio request failed:%d\n", rc);
+//	rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
+//	if (rc)
+//		pr_err("WLAN_WOW gpio request failed:%d\n", rc);
 
 	rc = gpio_direction_output(TEGRA_WLAN_PWR, 0);
 	if (rc)
@@ -399,15 +432,15 @@ static int __init tegra_wifi_init(void)
 	gpio_direction_output(TEGRA_WLAN_RST, 0);
 	if (rc)
 		pr_err("WLAN_RST gpio direction configuration failed:%d\n", rc);
-	rc = gpio_direction_input(TEGRA_WLAN_WOW);
-	if (rc)
-		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
+//	rc = gpio_direction_input(TEGRA_WLAN_WOW);
+//	if (rc)
+//		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
 
 
 	wifi_resource[0].start = wifi_resource[0].end =
-	gpio_to_irq(TEGRA_GPIO_PU5);
+//	gpio_to_irq(TEGRA_GPIO_PU5);
 	platform_device_register(&tegra_mrvl_wifi_device);
-	
+//	platform_device_register(&tegra_bt_device);	
 
 	return 0;
 }
@@ -422,3 +455,4 @@ int __init surface_rt_sdhci_init(void)
 	
 	return 0;
 }
+

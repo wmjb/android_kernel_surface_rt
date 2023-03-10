@@ -153,7 +153,7 @@ static unsigned long tegra_dc_find_max_bandwidth(struct tegra_dc_win *wins[],
 	 * Assuming 60% efficiency: i.e. if we calculate we need 70MBps, we
 	 * will request 117MBps from EMC.
 	 */
-	max_bw = max_bw + (17 * max_bw / 25);
+	max_bw = max_bw + (17 * max_bw / 10);
 #endif
 
 	return max_bw;
@@ -207,7 +207,7 @@ static unsigned long tegra_dc_calc_win_bandwidth(struct tegra_dc *dc,
 		tiled_windows_bw_multiplier : 1);
 
 #if defined(CONFIG_MACH_GROUPER) || defined(CONFIG_MACH_SURFACE_RT)
-	ret = ret * 13 / 10;
+	ret = ret * 20 / 10;
 #endif
 
 	return ret;

@@ -366,6 +366,7 @@ config MACH_GROUPER
 config MACH_SURFACE_RT
        bool "surface rt board"
        depends on ARCH_TEGRA_3x_SOC
+       select MACH_HAS_SND_SOC_TEGRA_WM8962 if SND_SOC
        help
          Support for Microsoft Surface RT
 

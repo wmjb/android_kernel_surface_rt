@@ -536,7 +536,7 @@ int clk_set_rate_locked(struct clk *c, unsigned long rate)
 
 		auto_dvfs_tmp = false;
 		if (c->boot_rate > rate) {
-			printk("rate is too HIGH for DVFS :( time for hacks\n");
+			printk("%s rate %lu is too HIGH for DVFS %lu :( time for hacks\n", c->name,rate,c->boot_rate);
 			auto_dvfs_tmp = c->auto_dvfs;
 			c->auto_dvfs = false;
 		}

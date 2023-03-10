@@ -436,6 +436,7 @@ deps_config := \
 	drivers/net/wan/Kconfig \
 	drivers/net/wimax/i2400m/Kconfig \
 	drivers/net/wimax/Kconfig \
+	drivers/net/wireless/mwlan/Kconfig \
 	drivers/net/wireless/wlan_src/Kconfig \
 	drivers/net/wireless/rtl8821CU/Kconfig \
 	drivers/net/wireless/mwifiex/Kconfig \
