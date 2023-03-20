@@ -57,6 +57,7 @@ static struct regulator_consumer_supply tps6591x_vio_supply_0[] = {
 	REGULATOR_SUPPLY("avdd_usb_pll", "tegra-ehci.0"),
 	REGULATOR_SUPPLY("avdd_usb_pll", "tegra-ehci.1"),
 	REGULATOR_SUPPLY("avdd_usb_pll", "tegra-ehci.2"),
+	REGULATOR_SUPPLY("avdd_usb", NULL),
 	REGULATOR_SUPPLY("avdd_ic_usb", NULL),
 	REGULATOR_SUPPLY("vdd_lvds", NULL),
 	REGULATOR_SUPPLY("vdd_pnl", NULL),

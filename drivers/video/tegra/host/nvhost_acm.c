@@ -363,8 +363,18 @@ static int nvhost_module_update_rate(struct platform_device *dev, int index)
 
 	/* If devfreq is on, use that clock rate, otherwise default */
 	devfreq_rate = pdata->clocks[index].devfreq_rate;
-	default_rate = devfreq_rate ?
-		devfreq_rate : pdata->clocks[index].default_rate;
+
+// comment out not to do dvfs
+//	default_rate = devfreq_rate ?
+//		devfreq_rate : pdata->clocks[index].default_rate;
+
+	devfreq_rate = pdata->clocks[index].devfreq_rate; // uncomment do default rate instead 600mhz
+
+
+	default_rate = pdata->clocks[index].default_rate;
+
+
+
 	default_rate = clk_round_rate(pdata->clk[index], default_rate);
 
 	list_for_each_entry(m, &pdata->client_list, node) {

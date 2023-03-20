@@ -308,9 +308,9 @@ static __initdata struct tegra_clk_init_table tegra30_clk_init_table[] = {
 	{ "csite",      NULL,           0,              true },
 #endif
 	{ "pll_u",	NULL,		480000000,	false },
-	{ "sdmmc1",	"pll_p",	48000000,	false},
-	{ "sdmmc3",	"pll_p",	48000000,	false},
-	{ "sdmmc4",	"pll_p",	48000000,	false},
+	{ "sdmmc1",	"pll_p",	48000000,	false}, //sdcard
+	{ "sdmmc3",	"pll_p",	102000000,	false}, //wifi
+	{ "sdmmc4",	"pll_p",	102000000,	false}, //emmc
 	{ "sbc1.sclk",	NULL,		40000000,	false},
 	{ "sbc2.sclk",	NULL,		40000000,	false},
 	{ "sbc3.sclk",	NULL,		40000000,	false},

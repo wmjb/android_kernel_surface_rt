@@ -221,7 +221,7 @@ static struct platform_device tegra_bt_device = {
 };
 */
 
-static struct resource sdhci_resource0[] = {
+static struct resource sdhci_resource0[] = { //sdcard
 	[0] = {
 		.start  = INT_SDMMC1,
 		.end    = INT_SDMMC1,
@@ -234,7 +234,7 @@ static struct resource sdhci_resource0[] = {
 	},
 };
 
-static struct resource sdhci_resource2[] = {
+static struct resource sdhci_resource2[] = { //wifi
 	[0] = {
 		.start  = INT_SDMMC3,
 		.end    = INT_SDMMC3,
@@ -247,7 +247,7 @@ static struct resource sdhci_resource2[] = {
 	},
 };
 
-static struct resource sdhci_resource3[] = {
+static struct resource sdhci_resource3[] = { //emmc
 	[0] = {
 		.start	= INT_SDMMC4,
 		.end	= INT_SDMMC4,
@@ -260,7 +260,7 @@ static struct resource sdhci_resource3[] = {
 	},
 };
 
-static struct embedded_sdio_data embedded_sdio_data2 = {
+static struct embedded_sdio_data embedded_sdio_data2 = { //wifi
 	.cccr   = {
 		.sdio_vsn       = 2,
 		.multi_block    = 1,
@@ -275,7 +275,7 @@ static struct embedded_sdio_data embedded_sdio_data2 = {
 	},
 };
 
-static struct tegra_sdhci_platform_data tegra_sdhci_platform_data0 = {
+static struct tegra_sdhci_platform_data tegra_sdhci_platform_data0 = { //sdcard
 	.cd_gpio = TEGRA_GPIO_PI5,
 	.wp_gpio = -1,
 	.power_gpio = TEGRA_GPIO_PD7,
@@ -291,7 +291,7 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data0 = {
 };
 
 
-static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = {
+static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = { //wifi
         .mmc_data = {
                 .register_status_notify = tegra_wifi_status_register,
                 .built_in = 0,
@@ -306,20 +306,21 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = {
 	.tap_delay = 0x2,
 	.trim_delay = 0x2,
 	.ddr_clk_limit = 50000000,
-	.max_clk_limit = 100000000,
+	.max_clk_limit = 102000000,
 	.uhs_mask = MMC_UHS_MASK_DDR50,
 	.edp_support = false,
 	
 };
 
 
-static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = {
+static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = { //emmc
 	.cd_gpio = -1,
 	.wp_gpio = -1,
 	.power_gpio = -1,
 	.is_8bit = 1,
 	.tap_delay = 0x0F,
-	.ddr_clk_limit = 41000000,
+	.ddr_clk_limit = 102000000,
+//	.max_clk_limit = 208000000,
 	.mmc_data = {
 		.built_in = 1,
 		.ocr_mask = MMC_OCR_1V8_MASK,
@@ -327,7 +328,7 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = {
 };
 
 
-static struct platform_device tegra_sdhci_device0 = {
+static struct platform_device tegra_sdhci_device0 = { //sdcard
 	.name		= "sdhci-tegra",
 	.id		= 0,
 	.resource	= sdhci_resource0,
@@ -337,7 +338,7 @@ static struct platform_device tegra_sdhci_device0 = {
 	},
 };
 
-static struct platform_device tegra_sdhci_device2 = {
+static struct platform_device tegra_sdhci_device2 = { //wifi
 	.name		= "sdhci-tegra",
 	.id		= 2,
 	.resource	= sdhci_resource2,
@@ -347,7 +348,7 @@ static struct platform_device tegra_sdhci_device2 = {
 	},
 };
 
-static struct platform_device tegra_sdhci_device3 = {
+static struct platform_device tegra_sdhci_device3 = { //emmc
 	.name		= "sdhci-tegra",
 	.id		= 3,
 	.resource	= sdhci_resource3,
@@ -363,12 +364,14 @@ static int tegra_wifi_power(int on)
 
         pr_debug("%s: %d\n", __func__, on);
  
+
         sd_dpd = tegra_io_dpd_get(&tegra_sdhci_device2.dev);
         if (sd_dpd) {
                 mutex_lock(&sd_dpd->delay_lock);
                 tegra_io_dpd_disable(sd_dpd);
                 mutex_unlock(&sd_dpd->delay_lock);
         }
+
         if (on) {
                 gpio_set_value(TEGRA_WLAN_RST, 1);
                 mdelay(100);
@@ -429,7 +432,7 @@ static int __init tegra_wifi_init(void)
 	rc = gpio_direction_output(TEGRA_WLAN_PWR, 0);
 	if (rc)
 		pr_err("WLAN_PWR gpio direction configuration failed:%d\n", rc);
-	gpio_direction_output(TEGRA_WLAN_RST, 0);
+	rc = gpio_direction_output(TEGRA_WLAN_RST, 0);
 	if (rc)
 		pr_err("WLAN_RST gpio direction configuration failed:%d\n", rc);
 //	rc = gpio_direction_input(TEGRA_WLAN_WOW);
@@ -437,10 +440,12 @@ static int __init tegra_wifi_init(void)
 //		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
 
 
-	wifi_resource[0].start = wifi_resource[0].end =
+        gpio_set_value(TEGRA_WLAN_PWR, 0);
+//	wifi_resource[0].start = wifi_resource[0].end =
 //	gpio_to_irq(TEGRA_GPIO_PU5);
 	platform_device_register(&tegra_mrvl_wifi_device);
 //	platform_device_register(&tegra_bt_device);	
+//        gpio_set_value(TEGRA_WLAN_PWR, 1);
 
 	return 0;
 }
@@ -451,6 +456,11 @@ int __init surface_rt_sdhci_init(void)
 	platform_device_register(&tegra_sdhci_device3);
 	platform_device_register(&tegra_sdhci_device0);
 	platform_device_register(&tegra_sdhci_device2);
+
+
+
+tegra_sdhci_platform_data2.max_clk_limit = 12000000;
+
 	tegra_wifi_init();
 	
 	return 0;
