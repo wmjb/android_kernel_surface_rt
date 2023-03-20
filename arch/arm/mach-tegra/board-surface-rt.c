@@ -141,7 +141,7 @@ static struct tegra_i2c_platform_data surface_rt_i2c3_platform_data = { //camera
 	.arb_recovery = arb_lost_recovery,
 };
 */
-static struct tegra_i2c_platform_data surface_rt_i2c4_platform_data = { //HDMI display data channel ?? / temp monitor
+static struct tegra_i2c_platform_data surface_rt_i2c4_platform_data = { //HDMI display data channel ?? 
 	.adapter_nr	= 3,
 	.bus_count	= 1,
 	.bus_clk_rate	= { 100000, 0 },
