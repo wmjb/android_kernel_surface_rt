@@ -149,8 +149,10 @@ static __initdata struct tegra_pingroup_config surface_rt_pinmux_common[] = {
 	DEFAULT_PINMUX(SDMMC3_DAT1,     SDMMC3,          PULL_UP,    NORMAL,     INPUT),
 	DEFAULT_PINMUX(SDMMC3_DAT2,     SDMMC3,          PULL_UP,    NORMAL,     INPUT),
 	DEFAULT_PINMUX(SDMMC3_DAT3,     SDMMC3,          PULL_UP,    NORMAL,     INPUT),
-	DEFAULT_PINMUX(SDMMC3_DAT6,     SDMMC3,          PULL_UP,    NORMAL,     INPUT),
-	DEFAULT_PINMUX(SDMMC3_DAT7,     SDMMC3,          PULL_UP,    NORMAL,     INPUT),
+	DEFAULT_PINMUX(SDMMC3_DAT4,     PWM1,	         NORMAL,     NORMAL,     OUTPUT)
+	DEFAULT_PINMUX(SDMMC3_DAT5,     SDMMC3,          PULL_UP,    NORMAL,     OUTPUT)
+	DEFAULT_PINMUX(SDMMC3_DAT6,     SPDIF,          NORMAL,     TRISTATE,     INPUT),
+	DEFAULT_PINMUX(SDMMC3_DAT7,     SPDIF,          NORMAL,     TRISTATE,     INPUT),
 
 	/* SDMMC4 pinmux */
 	DEFAULT_PINMUX(SDMMC4_CLK,      SDMMC4,          NORMAL,     NORMAL,     INPUT),
@@ -163,7 +165,7 @@ static __initdata struct tegra_pingroup_config surface_rt_pinmux_common[] = {
 	DEFAULT_PINMUX(SDMMC4_DAT5,     SDMMC4,          PULL_UP,    NORMAL,     INPUT),
 	DEFAULT_PINMUX(SDMMC4_DAT6,     SDMMC4,          PULL_UP,    NORMAL,     INPUT),
 	DEFAULT_PINMUX(SDMMC4_DAT7,     SDMMC4,          PULL_UP,    NORMAL,     INPUT),
-	DEFAULT_PINMUX(SDMMC4_RST_N,    RSVD1,           PULL_DOWN,  NORMAL,     INPUT),
+	DEFAULT_PINMUX(SDMMC4_RST_N,    RSVD1,           PULL_UP,    NORMAL,     INPUT),
 
 	/* I2C1 pinmux */
 	I2C_PINMUX(GEN1_I2C_SCL,	I2C1,		NORMAL,	NORMAL,	INPUT,	DISABLE,	ENABLE),
