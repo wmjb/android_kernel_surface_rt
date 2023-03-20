@@ -577,8 +577,8 @@ static void __init tegra_surface_rt_init(void)
 	tegra_enable_pinmux();
 	tegra_smmu_init();
 	tegra_soc_device_init("surface-rt");
-	//surface_rt_pinmux_init_early();
-	//surface_rt_pinmux_init(); // need to fix first
+	surface_rt_pinmux_init_early();
+	surface_rt_pinmux_init();
 	surface_rt_booting_info();
 	surface_rt_i2c_init();
 	surface_rt_spi_init();
