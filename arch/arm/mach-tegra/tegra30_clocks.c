@@ -841,17 +841,18 @@ static int tegra3_cpu_clk_set_rate(struct clk *c, unsigned long rate)
 	bool skip_to_backup =
 		skip && (clk_get_rate_all_locked(c) >= SKIPPER_ENGAGE_RATE);
 
-	if (c->dvfs) {
-		if (!c->dvfs->dvfs_rail)
-			return -ENOSYS;
-		else if ((!c->dvfs->dvfs_rail->disabled) &&
-			  (!c->dvfs->dvfs_rail->reg) &&
-			  (clk_get_rate_locked(c) < rate)) {
-			WARN(1, "Increasing CPU rate while regulator is not"
-				" ready may overclock CPU\n");
-			return -ENOSYS;
-		}
-	}
+//let it oc a litle it's not going to break it.
+//	if (c->dvfs) {
+//		if (!c->dvfs->dvfs_rail)
+//			return -ENOSYS;
+//		else if ((!c->dvfs->dvfs_rail->disabled) &&
+//			  (!c->dvfs->dvfs_rail->reg) &&
+//			  (clk_get_rate_locked(c) < rate)) {
+//			WARN(1, "Increasing CPU rate while regulator is not"
+//				" ready may overclock CPU\n");
+//			return -ENOSYS;
+//		}
+//	}
 
 	/*
 	 * Take an extra reference to the main pll so it doesn't turn

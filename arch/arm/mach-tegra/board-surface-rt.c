@@ -112,7 +112,7 @@ static __initdata struct tegra_clk_init_table surface_rt_clk_init_table[] = {
 	{"spdif_out",	"pll_a_out0",	0,		false},
 	{NULL,		NULL,		0,		0},
 };
-/*
+
 static struct tegra_i2c_platform_data surface_rt_i2c1_platform_data = { //MS HID
 	.adapter_nr	= 0,
 	.bus_count	= 1,
@@ -121,7 +121,7 @@ static struct tegra_i2c_platform_data surface_rt_i2c1_platform_data = { //MS HID
 	.sda_gpio		= {TEGRA_GPIO_PC5, 0},
 	.arb_recovery = arb_lost_recovery,
 };
-*/
+
 static struct tegra_i2c_platform_data surface_rt_i2c2_platform_data = { //touch hid
 	.adapter_nr	= 1,
 	.bus_count	= 1,
@@ -140,7 +140,7 @@ static struct tegra_i2c_platform_data surface_rt_i2c3_platform_data = { //camera
 	.sda_gpio		= {TEGRA_GPIO_PBB2, 0},
 	.arb_recovery = arb_lost_recovery,
 };
-*/
+
 static struct tegra_i2c_platform_data surface_rt_i2c4_platform_data = { //HDMI display data channel ?? 
 	.adapter_nr	= 3,
 	.bus_count	= 1,
@@ -149,7 +149,7 @@ static struct tegra_i2c_platform_data surface_rt_i2c4_platform_data = { //HDMI d
 	.sda_gpio		= {TEGRA_GPIO_PV5, 0},
 	.arb_recovery = arb_lost_recovery,
 };
-
+*/
 static struct tegra_i2c_platform_data surface_rt_i2c5_platform_data = { // system bus - embedded controller / wm8962 audio
 	.adapter_nr	= 4,
 	.bus_count	= 1,
@@ -179,17 +179,17 @@ static struct i2c_board_info __initdata surface_rt_codec_wm8962_info = {
 
 static void surface_rt_i2c_init(void)
 {
-//	tegra_i2c_device1.dev.platform_data = &surface_rt_i2c1_platform_data;
+	tegra_i2c_device1.dev.platform_data = &surface_rt_i2c1_platform_data;
 	tegra_i2c_device2.dev.platform_data = &surface_rt_i2c2_platform_data;
 //	tegra_i2c_device3.dev.platform_data = &surface_rt_i2c3_platform_data;
-	tegra_i2c_device4.dev.platform_data = &surface_rt_i2c4_platform_data;
+//	tegra_i2c_device4.dev.platform_data = &surface_rt_i2c4_platform_data;
 	tegra_i2c_device5.dev.platform_data = &surface_rt_i2c5_platform_data;
 
 	platform_device_register(&tegra_i2c_device5);
-	platform_device_register(&tegra_i2c_device4);
+//	platform_device_register(&tegra_i2c_device4);
 //	platform_device_register(&tegra_i2c_device3);
 	platform_device_register(&tegra_i2c_device2);
-//	platform_device_register(&tegra_i2c_device1);
+	platform_device_register(&tegra_i2c_device1);
 
 }
 
@@ -556,9 +556,9 @@ static void surface_rt_ec_init(void)
 	int ret;
 
 	gpio_direction_output(TEGRA_BATTERY_EN, 1);
-	mdelay(100);
+	mdelay(200);
         gpio_set_value(TEGRA_BATTERY_EN, 1);
-	mdelay(100);
+	mdelay(200);
 	ret = gpio_get_value(TEGRA_BATTERY_EN);
 
 	printk(KERN_INFO "Set Surface EC GPIO : %d\n",ret);
