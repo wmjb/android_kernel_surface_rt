@@ -149,6 +149,7 @@ static struct tegra_i2c_platform_data surface_rt_i2c4_platform_data = { //HDMI d
 	.sda_gpio		= {TEGRA_GPIO_PV5, 0},
 	.arb_recovery = arb_lost_recovery,
 };
+
 */
 static struct tegra_i2c_platform_data surface_rt_i2c5_platform_data = { // system bus - embedded controller / wm8962 audio
 	.adapter_nr	= 4,
@@ -340,23 +341,15 @@ static struct platform_device tegra_rtc_device = {
 	.num_resources = ARRAY_SIZE(tegra_rtc_resources),
 };
 
-
-
-
 #ifdef CONFIG_SND_SOC_TEGRA_WM8962
-
 
 static void surface_rt_sound_init(void)
 
 {
-
         surface_rt_codec_wm8962_info.irq = gpio_to_irq(TEGRA_GPIO_CDC_IRQ);
         i2c_register_board_info(4, &surface_rt_codec_wm8962_info, 1);
 
-
         printk(KERN_INFO "Surface RT Sound Init \n");
-
-
 }
 
 static struct tegra_asoc_platform_data cardhu_audio_wm8962_pdata = {
@@ -392,7 +385,6 @@ static struct platform_device cardhu_audio_wm8962_device = {
 
 #endif
 
-
 static struct platform_device *surface_rt_devices[] __initdata = {
 	&tegra_pmu_device,
 	&tegra_rtc_device,
@@ -426,9 +418,6 @@ static struct platform_device *surface_rt_devices[] __initdata = {
 	&tegra_aes_device,
 #endif
 };
-
-
-
 
 #if defined(CONFIG_USB_SUPPORT)
 static void surface_rt_otg_power(int enable)
@@ -554,21 +543,22 @@ static void surface_rt_ec_init(void)
 
 {
 	int ret;
+	ret = gpio_request(TEGRA_BATTERY_EN, "ec_gpio");
+	if (ret)
+	{
+		pr_err("EC gpio request failed:%d\n", ret);
+		return ;
+	}
+	else
+	{	
+		gpio_direction_output(TEGRA_BATTERY_EN, 1);
+		mdelay(100);
+ 	        gpio_set_value(TEGRA_BATTERY_EN, 1);
+		mdelay(100);
+		ret = gpio_get_value(TEGRA_BATTERY_EN);
 
-	gpio_direction_output(TEGRA_BATTERY_EN, 1);
-	mdelay(200);
-        gpio_set_value(TEGRA_BATTERY_EN, 1);
-	mdelay(200);
-	ret = gpio_get_value(TEGRA_BATTERY_EN);
-
-	printk(KERN_INFO "Set Surface EC GPIO : %d\n",ret);
-
-
- //       i2c_register_board_info(4, surface_rt_i2c4_battery_charger_info,
-   //                     ARRAY_SIZE(surface_rt_i2c4_battery_charger_info));
-
-
-
+		printk(KERN_INFO "Set Surface EC GPIO : %d\n",ret);
+	}
 }
 
 static void __init tegra_surface_rt_init(void)

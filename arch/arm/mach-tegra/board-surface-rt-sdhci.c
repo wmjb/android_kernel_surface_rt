@@ -47,8 +47,8 @@
 
 
 #define TEGRA_WLAN_PWR	TEGRA_GPIO_PD4
-#define TEGRA_WLAN_RST	TEGRA_GPIO_PD3
-//#define TEGRA_WLAN_WOW	TEGRA_GPIO_PO4
+#define TEGRA_WLAN_RST	TEGRA_GPIO_PD3 // option of PD3, PW5 or PX7
+#define TEGRA_WLAN_WOW	TEGRA_GPIO_PU5
 
 static void (*wifi_status_cb)(int card_present, void *dev_id);
 static void *wifi_status_cb_devid;
@@ -270,8 +270,8 @@ static struct embedded_sdio_data embedded_sdio_data2 = { //wifi
 		.high_speed     = 1,
 	},
 	.cis  = {
-		.vendor	 = 0x02d0,
-		.device	 = 0x4329,
+		.vendor	 = 0x02df,
+		.device	 = 0x9129,
 	},
 };
 
@@ -360,10 +360,11 @@ static struct platform_device tegra_sdhci_device3 = { //emmc
 
 static int tegra_wifi_power(int on)
 {
+	int ret;
         struct tegra_io_dpd *sd_dpd;
 
         pr_debug("%s: %d\n", __func__, on);
- 
+ 	printk(KERN_INFO "%s: : %d\n", __func__,on);
 
         sd_dpd = tegra_io_dpd_get(&tegra_sdhci_device2.dev);
         if (sd_dpd) {
@@ -373,43 +374,40 @@ static int tegra_wifi_power(int on)
         }
 
         if (on) {
-                gpio_set_value(TEGRA_WLAN_RST, 1);
-                mdelay(100);
-                gpio_set_value(TEGRA_WLAN_RST, 0);
-                mdelay(100);
-                gpio_set_value(TEGRA_WLAN_RST, 1);
-                mdelay(100);
+     //           gpio_set_value(TEGRA_WLAN_RST, 1);
+     //          mdelay(100);
+     //          gpio_set_value(TEGRA_WLAN_RST, 0);
+     //           mdelay(100);
+     //           gpio_set_value(TEGRA_WLAN_RST, 1);
+     //           mdelay(100);
                 gpio_set_value(TEGRA_WLAN_PWR, 1);
-                mdelay(200);
+                mdelay(100);
+                gpio_set_value(TEGRA_WLAN_RST, 1);
+		mdelay(200);
+            gpio_direction_input(TEGRA_WLAN_WOW);
+              enable_wifi_sdio_func();
         } else {
                 gpio_set_value(TEGRA_WLAN_RST, 0);
-                mdelay(100);
+               mdelay(100);
                 gpio_set_value(TEGRA_WLAN_PWR, 0);
-        }
-//        if (on)
-//            gpio_direction_input(TEGRA_WLAN_WOW);
-
-//        else
-//            gpio_direction_output(TEGRA_WLAN_WOW, 0);
-        if (on) {
-                enable_wifi_sdio_func();
-                if (!gpio_get_value(TEGRA_WLAN_PWR)) {
-                        gpio_set_value(TEGRA_WLAN_PWR, 1);
-                }
-        }
-        mdelay(100);
-        gpio_set_value(TEGRA_WLAN_RST, on);
-        mdelay(200);
-        if (!on) {
+		mdelay(200);
+            gpio_direction_output(TEGRA_WLAN_WOW, 0);
                 disable_wifi_sdio_func();
         }
-
 
         if (sd_dpd) {
                 mutex_lock(&sd_dpd->delay_lock);
                 tegra_io_dpd_enable(sd_dpd);
                 mutex_unlock(&sd_dpd->delay_lock);
         }
+
+	ret = gpio_get_value(TEGRA_WLAN_PWR);
+
+	printk(KERN_INFO "TEGRA_WLAN_PWR : %d\n",ret);
+
+	ret = gpio_get_value(TEGRA_WLAN_RST);
+
+	printk(KERN_INFO "TEGRA_WLAN_RST : %d\n",ret);
 
         return 0;
 }
@@ -425,9 +423,9 @@ static int __init tegra_wifi_init(void)
 	rc = gpio_request(TEGRA_WLAN_RST, "wlan_rst");
 	if (rc)
 		pr_err("WLAN_RST gpio request failed:%d\n", rc);
-//	rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
-//	if (rc)
-//		pr_err("WLAN_WOW gpio request failed:%d\n", rc);
+	rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
+	if (rc)
+	pr_err("WLAN_WOW gpio request failed:%d\n", rc);
 
 	rc = gpio_direction_output(TEGRA_WLAN_PWR, 0);
 	if (rc)
@@ -435,18 +433,18 @@ static int __init tegra_wifi_init(void)
 	rc = gpio_direction_output(TEGRA_WLAN_RST, 0);
 	if (rc)
 		pr_err("WLAN_RST gpio direction configuration failed:%d\n", rc);
-//	rc = gpio_direction_input(TEGRA_WLAN_WOW);
-//	if (rc)
-//		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
+	rc = gpio_direction_input(TEGRA_WLAN_WOW);
+	if (rc)
+		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
 
-
-        gpio_set_value(TEGRA_WLAN_PWR, 0);
-//	wifi_resource[0].start = wifi_resource[0].end =
-//	gpio_to_irq(TEGRA_GPIO_PU5);
+//       gpio_set_value(TEGRA_WLAN_PWR, 0);
+	wifi_resource[0].start = gpio_to_irq(TEGRA_WLAN_WOW);
+	wifi_resource[0].end =	gpio_to_irq(TEGRA_WLAN_WOW);
 	platform_device_register(&tegra_mrvl_wifi_device);
 //	platform_device_register(&tegra_bt_device);	
 //        gpio_set_value(TEGRA_WLAN_PWR, 1);
 
+//	disable_wifi_sdio_func();
 	return 0;
 }
 
@@ -457,9 +455,7 @@ int __init surface_rt_sdhci_init(void)
 	platform_device_register(&tegra_sdhci_device0);
 	platform_device_register(&tegra_sdhci_device2);
 
-
-
-tegra_sdhci_platform_data2.max_clk_limit = 12000000;
+	tegra_sdhci_platform_data2.max_clk_limit = 12000000;
 
 	tegra_wifi_init();
 	

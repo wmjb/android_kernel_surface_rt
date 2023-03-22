@@ -365,13 +365,12 @@ static int nvhost_module_update_rate(struct platform_device *dev, int index)
 	devfreq_rate = pdata->clocks[index].devfreq_rate;
 
 // comment out not to do dvfs
-//	default_rate = devfreq_rate ?
-//		devfreq_rate : pdata->clocks[index].default_rate;
-
-	devfreq_rate = pdata->clocks[index].devfreq_rate; // uncomment do default rate instead 600mhz
+	default_rate = devfreq_rate ?
+		devfreq_rate : pdata->clocks[index].default_rate;
 
 
-	default_rate = pdata->clocks[index].default_rate;
+
+//	default_rate = pdata->clocks[index].default_rate; // uncomment to run at fixed 600mhz
 
 
 
