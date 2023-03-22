@@ -184,13 +184,13 @@ subsys_initcall_sync(tegra_wifi_prepower);
 
 static struct resource wifi_resource[] = {
 	[0] = {
-		.name	= "sd8xxx_sdio_irq",
+		.name	= "sd8xxx_irq",
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHLEVEL | IORESOURCE_IRQ_SHAREABLE,
 	},
 };
 
 static struct platform_device tegra_mrvl_wifi_device = {
-	.name		= "sd8xxx_sdio",
+	.name		= "sd8xxx",
 	.id		= 1,
 	.num_resources	= 1,
 	.resource	= wifi_resource,
