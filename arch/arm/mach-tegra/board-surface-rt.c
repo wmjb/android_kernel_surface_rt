@@ -604,9 +604,9 @@ static void __init tegra_surface_rt_reserve(void)
 {
 #ifdef CONFIG_NVMAP_CONVERT_CARVEOUT_TO_IOVMM
 	/* support 1920X1200 with 24bpp */
-	tegra_reserve(0, SZ_8M + SZ_2M, 0);
+	tegra_reserve(0, SZ_8M + SZ_1M, SZ_16M);
 #else
-	tegra_reserve(SZ_128M, SZ_8M + SZ_2M, 0);
+	tegra_reserve(SZ_128M, SZ_8M + SZ_8M);
 #endif
 }
 
