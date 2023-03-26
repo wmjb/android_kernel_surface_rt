@@ -437,14 +437,11 @@ static int __init tegra_wifi_init(void)
 	if (rc)
 		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
 
-//       gpio_set_value(TEGRA_WLAN_PWR, 0);
-	wifi_resource[0].start = gpio_to_irq(TEGRA_WLAN_WOW);
-	wifi_resource[0].end =	gpio_to_irq(TEGRA_WLAN_WOW);
+//	wifi_resource[0].start = gpio_to_irq(TEGRA_WLAN_WOW);
+//	wifi_resource[0].end =	gpio_to_irq(TEGRA_WLAN_WOW);
 	platform_device_register(&tegra_mrvl_wifi_device);
 //	platform_device_register(&tegra_bt_device);	
-//        gpio_set_value(TEGRA_WLAN_PWR, 1);
 
-//	disable_wifi_sdio_func();
 	return 0;
 }
 
