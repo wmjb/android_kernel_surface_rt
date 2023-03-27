@@ -362,6 +362,29 @@ static int tegra_wifi_power(int on)
 {
 	int ret;
         struct tegra_io_dpd *sd_dpd;
+        int rc;
+
+        rc = gpio_request(TEGRA_WLAN_PWR, "wlan_power");
+        if (rc)
+                pr_err("WLAN_PWR gpio request failed:%d\n", rc);
+        rc = gpio_request(TEGRA_WLAN_RST, "wlan_rst");
+        if (rc)
+                pr_err("WLAN_RST gpio request failed:%d\n", rc);
+        rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
+        if (rc)
+        pr_err("WLAN_WOW gpio request failed:%d\n", rc);
+
+        rc = gpio_direction_output(TEGRA_WLAN_PWR, 0);
+        if (rc)
+                pr_err("WLAN_PWR gpio direction configuration failed:%d\n", rc);
+        rc = gpio_direction_output(TEGRA_WLAN_RST, 0);
+        if (rc)
+                pr_err("WLAN_RST gpio direction configuration failed:%d\n", rc);
+        rc = gpio_direction_input(TEGRA_WLAN_WOW);
+        if (rc)
+                pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
+
+
 
         pr_debug("%s: %d\n", __func__, on);
  	printk(KERN_INFO "%s: : %d\n", __func__,on);
@@ -385,6 +408,10 @@ static int tegra_wifi_power(int on)
                 gpio_set_value(TEGRA_WLAN_RST, 1);
 		mdelay(200);
             gpio_direction_input(TEGRA_WLAN_WOW);
+
+               gpio_set_value(TEGRA_WLAN_RST, 0);
+                mdelay(100);
+
               enable_wifi_sdio_func();
         } else {
                 gpio_set_value(TEGRA_WLAN_RST, 0);
@@ -401,6 +428,7 @@ static int tegra_wifi_power(int on)
                 mutex_unlock(&sd_dpd->delay_lock);
         }
 
+
 	ret = gpio_get_value(TEGRA_WLAN_PWR);
 
 	printk(KERN_INFO "TEGRA_WLAN_PWR : %d\n",ret);
@@ -415,27 +443,27 @@ static int tegra_wifi_power(int on)
 
 static int __init tegra_wifi_init(void)
 {
-	int rc;
+//	int rc;
 
-	rc = gpio_request(TEGRA_WLAN_PWR, "wlan_power");
-	if (rc)
-		pr_err("WLAN_PWR gpio request failed:%d\n", rc);
-	rc = gpio_request(TEGRA_WLAN_RST, "wlan_rst");
-	if (rc)
-		pr_err("WLAN_RST gpio request failed:%d\n", rc);
-	rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
-	if (rc)
-	pr_err("WLAN_WOW gpio request failed:%d\n", rc);
-
-	rc = gpio_direction_output(TEGRA_WLAN_PWR, 0);
-	if (rc)
-		pr_err("WLAN_PWR gpio direction configuration failed:%d\n", rc);
-	rc = gpio_direction_output(TEGRA_WLAN_RST, 0);
-	if (rc)
-		pr_err("WLAN_RST gpio direction configuration failed:%d\n", rc);
-	rc = gpio_direction_input(TEGRA_WLAN_WOW);
-	if (rc)
-		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
+//	rc = gpio_request(TEGRA_WLAN_PWR, "wlan_power");
+//	if (rc)
+//		pr_err("WLAN_PWR gpio request failed:%d\n", rc);
+//	rc = gpio_request(TEGRA_WLAN_RST, "wlan_rst");
+//	if (rc)
+//		pr_err("WLAN_RST gpio request failed:%d\n", rc);
+///	rc = gpio_request(TEGRA_WLAN_WOW, "bcmsdh_sdmmc");
+//	if (rc)
+//	pr_err("WLAN_WOW gpio request failed:%d\n", rc);
+//
+//	rc = gpio_direction_output(TEGRA_WLAN_PWR, 0);
+//	if (rc)
+//		pr_err("WLAN_PWR gpio direction configuration failed:%d\n", rc);
+//	rc = gpio_direction_output(TEGRA_WLAN_RST, 0);
+//	if (rc)
+//		pr_err("WLAN_RST gpio direction configuration failed:%d\n", rc);
+//	rc = gpio_direction_input(TEGRA_WLAN_WOW);
+//	if (rc)
+//		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
 
 //	wifi_resource[0].start = gpio_to_irq(TEGRA_WLAN_WOW);
 //	wifi_resource[0].end =	gpio_to_irq(TEGRA_WLAN_WOW);
