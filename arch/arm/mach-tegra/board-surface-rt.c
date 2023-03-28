@@ -422,18 +422,18 @@ static struct platform_device *surface_rt_devices[] __initdata = {
 #if defined(CONFIG_USB_SUPPORT)
 static void surface_rt_otg_power(int enable)
 {
-	struct power_supply *smb_usb = power_supply_get_by_name("smb347-usb");
-	union power_supply_propval usb_otg = { enable };
+//	struct power_supply *smb_usb = power_supply_get_by_name("smb347-usb");
+//	union power_supply_propval usb_otg = { enable };
 
 	pr_debug("%s: %d\n", __func__, enable);
 
-	if (smb_usb && smb_usb->set_property)
-		smb_usb->set_property(
-			smb_usb,
-			POWER_SUPPLY_PROP_USB_OTG,
-			&usb_otg);
-	else
-		pr_err("%s: couldn't get power supply\n", __func__);
+//	if (smb_usb && smb_usb->set_property)
+//		smb_usb->set_property(
+//			smb_usb,
+//			POWER_SUPPLY_PROP_USB_OTG,
+//			&usb_otg);
+//	else
+//		pr_err("%s: couldn't get power supply\n", __func__);
 }
 
 void surface_rt_usb_ehci1_phy_on(void)
@@ -550,7 +550,7 @@ static void surface_rt_ec_init(void)
 		return ;
 	}
 	else
-	{	
+	{
 		gpio_direction_output(TEGRA_BATTERY_EN, 1);
 		mdelay(100);
  	        gpio_set_value(TEGRA_BATTERY_EN, 1);

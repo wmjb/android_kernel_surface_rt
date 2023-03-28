@@ -271,7 +271,7 @@ static const struct dev_pm_ops mwifiex_sdio_pm_ops = {
 };
 
 static struct sdio_driver mwifiex_sdio = {
-	.name = "sd8xxx_sdio",
+	.name = "mwifiex_sdio",
 	.id_table = mwifiex_ids,
 	.probe = mwifiex_sdio_probe,
 	.remove = mwifiex_sdio_remove,
