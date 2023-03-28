@@ -439,6 +439,12 @@ static int __init tegra_wifi_init(void)
 //	if (rc)
 //		pr_err("WLAN_WOW gpio direction configuration failed:%d\n", rc);
 
+
+       gpio_set_value(TEGRA_WLAN_PWR, 0);
+mdelay(300);
+        gpio_set_value(TEGRA_WLAN_RST, 0);
+mdelay(1000);
+
        gpio_set_value(TEGRA_WLAN_PWR, 1);
 mdelay(300);
 
