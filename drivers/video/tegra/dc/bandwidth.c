@@ -207,7 +207,7 @@ static unsigned long tegra_dc_calc_win_bandwidth(struct tegra_dc *dc,
 		tiled_windows_bw_multiplier : 1);
 
 #if defined(CONFIG_MACH_GROUPER) || defined(CONFIG_MACH_SURFACE_RT)
-	ret = ret * 4;
+	ret = ret * 2;
 #endif
 
 	return ret;
