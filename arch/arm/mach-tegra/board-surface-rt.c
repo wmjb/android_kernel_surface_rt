@@ -80,19 +80,16 @@
 
 static __initdata struct tegra_clk_init_table surface_rt_clk_init_table[] = {
 	/* name		parent		rate		enabled */
-	{"apbif",	"clk_m",	12000000,	false},
-	{"audio0",	"i2s0_sync",	0,		false},
+	{"pll_m",	NULL,		0,		false},
 	{"audio1",	"i2s1_sync",	0,		false},
 	{"audio2",	"i2s2_sync",	0,		false},
 	{"audio3",	"i2s3_sync",	0,		false},
 	{"audio4",	"i2s4_sync",	0,		false},
 	{"blink",	"clk_32k",	32768,		true},
-	{"clk_out_2",	"extern2",	24000000,	false},
 	{"d_audio",	"clk_m",	12000000,	false},
 	{"dam0",	"clk_m",	12000000,	false},
 	{"dam1",	"clk_m",	12000000,	false},
 	{"dam2",	"clk_m",	12000000,	false},
-	{"extern2",	"clk_m",	24000000,	false},
 	{"hda",		"pll_p",	108000000,	false},
 	{"hda2codec_2x","pll_p",	48000000,	false},
 	{"i2c1",	"pll_p",	3200000,	false},
@@ -106,7 +103,6 @@ static __initdata struct tegra_clk_init_table surface_rt_clk_init_table[] = {
 	{"i2s3",	"pll_a_out0",	0,		false},
 	{"i2s4",	"pll_a_out0",	0,		false},
 	{"pll_p",	NULL,		0,		false},
-	{"pll_m",	NULL,		0,		false},
 	{"pll_c",       NULL,           0,              false},
 	{"pwm",		"pll_p",	5100000,	false},
 	{"spdif_out",	"pll_a_out0",	0,		false},
@@ -154,7 +150,7 @@ static struct tegra_i2c_platform_data surface_rt_i2c4_platform_data = { //HDMI d
 static struct tegra_i2c_platform_data surface_rt_i2c5_platform_data = { // system bus - embedded controller / wm8962 audio
 	.adapter_nr	= 4,
 	.bus_count	= 1,
-	.bus_clk_rate	= { 100000, 0 },
+	.bus_clk_rate	= { 400000, 0 },
 	.scl_gpio		= {TEGRA_GPIO_PZ6, 0},
 	.sda_gpio		= {TEGRA_GPIO_PZ7, 0},
 	.arb_recovery = arb_lost_recovery,
@@ -365,9 +361,9 @@ static struct tegra_asoc_platform_data cardhu_audio_wm8962_pdata = {
                 .is_i2s_master  = 1,
                 .i2s_mode       = TEGRA_DAIFMT_I2S,
         },
-        .i2s_param[BASEBAND]    = {
-                .audio_port_id  = -1,
-        },
+//      .i2s_param[BASEBAND]    = {
+//              .audio_port_id  = -1,
+//      },
 //      .i2s_param[BT_SCO]      = {
 //              .audio_port_id  = 3,
 //              .is_i2s_master  = 1,

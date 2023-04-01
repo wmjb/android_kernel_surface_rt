@@ -102,14 +102,6 @@ static struct regulator_consumer_supply tps6591x_vio_supply_0[] = {
 	REGULATOR_SUPPLY("vdd_3v3_edid", NULL),
 	REGULATOR_SUPPLY("vdd_3v3_hdmi_cec", NULL),
 	REGULATOR_SUPPLY("vdd_3v3_gmi", NULL),
-	REGULATOR_SUPPLY("DCVDD", NULL),
-	REGULATOR_SUPPLY("DBVDD", NULL),
-	REGULATOR_SUPPLY("AVDD", NULL),
-	REGULATOR_SUPPLY("CPVDD", NULL),
-	REGULATOR_SUPPLY("MICVDD", NULL),
-	REGULATOR_SUPPLY("PLLVDD", NULL),
-	REGULATOR_SUPPLY("SPKVDD1", NULL),
-	REGULATOR_SUPPLY("SPKVDD2", NULL),
 	REGULATOR_SUPPLY("vdd_3v3_sensor", NULL),
 	REGULATOR_SUPPLY("vdd_3v3_cam", NULL),
 	REGULATOR_SUPPLY("vdd_3v3_als", NULL),
@@ -131,10 +123,12 @@ static struct regulator_consumer_supply tps6591x_ldo1_supply_0[] = {
 
 static struct regulator_consumer_supply tps6591x_ldo3_supply_0[] = {
 	REGULATOR_SUPPLY("tCoverPower", NULL),
+
 };
 
 static struct regulator_consumer_supply tps6591x_ldo5_supply_0[] = {
 	REGULATOR_SUPPLY("vddio_sdmmc", "sdhci-tegra.0"),
+
 };
 
 static struct regulator_consumer_supply tps6591x_ldo7_supply_0[] = {
@@ -340,6 +334,14 @@ static struct regulator_consumer_supply fixed_reg_en_vdd_pnl1_supply[] = {
 /* EN_VDD_BL */
 static struct regulator_consumer_supply fixed_reg_en_vdd_bl_supply[] = {
 	REGULATOR_SUPPLY("vdd_backlight", NULL),
+	REGULATOR_SUPPLY("MICVDD", NULL),
+	REGULATOR_SUPPLY("SPKVDD1", NULL),
+	REGULATOR_SUPPLY("SPKVDD2", NULL),
+	REGULATOR_SUPPLY("DCVDD", NULL),
+	REGULATOR_SUPPLY("DBVDD", NULL),
+	REGULATOR_SUPPLY("AVDD", NULL),
+	REGULATOR_SUPPLY("CPVDD", NULL),
+	REGULATOR_SUPPLY("PLLVDD", NULL),
 };
 
 /* CAM1_LDO_EN from AP GPIO KB_ROW6 R06*/
