@@ -319,7 +319,7 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = { //emmc
 	.power_gpio = -1,
 	.is_8bit = 1,
 	.tap_delay = 0x0F,
-	.ddr_clk_limit = 102000000,
+	.ddr_clk_limit = 208000000,
 	.max_clk_limit = 208000000,
 	.mmc_data = {
 		.built_in = 1,
@@ -440,8 +440,8 @@ static int __init tegra_wifi_init(void)
         }
 
 
-//	wifi_resource[0].start = wifi_resource[0].end =
-//	gpio_to_irq(TEGRA_GPIO_PU5);
+	wifi_resource[0].start = wifi_resource[0].end =
+	gpio_to_irq(TEGRA_GPIO_PU5);
 	platform_device_register(&tegra_mrvl_wifi_device);
 //	platform_device_register(&tegra_bt_device);	
 

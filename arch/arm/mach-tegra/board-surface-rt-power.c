@@ -116,6 +116,14 @@ static struct regulator_consumer_supply tps6591x_vio_supply_0[] = {
 	REGULATOR_SUPPLY("ldo8", NULL),
 	REGULATOR_SUPPLY("vcore_audio", NULL),
 	REGULATOR_SUPPLY("avcore_audio", NULL),
+	REGULATOR_SUPPLY("MICVDD", NULL),
+	REGULATOR_SUPPLY("SPKVDD1", NULL),
+	REGULATOR_SUPPLY("SPKVDD2", NULL),
+	REGULATOR_SUPPLY("DCVDD", NULL),
+	REGULATOR_SUPPLY("DBVDD", NULL),
+	REGULATOR_SUPPLY("AVDD", NULL),
+	REGULATOR_SUPPLY("CPVDD", NULL),
+	REGULATOR_SUPPLY("PLLVDD", NULL),
 };
 static struct regulator_consumer_supply tps6591x_ldo1_supply_0[] = {
 	REGULATOR_SUPPLY("vdd_bridge", NULL),
@@ -334,14 +342,7 @@ static struct regulator_consumer_supply fixed_reg_en_vdd_pnl1_supply[] = {
 /* EN_VDD_BL */
 static struct regulator_consumer_supply fixed_reg_en_vdd_bl_supply[] = {
 	REGULATOR_SUPPLY("vdd_backlight", NULL),
-	REGULATOR_SUPPLY("MICVDD", NULL),
-	REGULATOR_SUPPLY("SPKVDD1", NULL),
-	REGULATOR_SUPPLY("SPKVDD2", NULL),
-	REGULATOR_SUPPLY("DCVDD", NULL),
-	REGULATOR_SUPPLY("DBVDD", NULL),
-	REGULATOR_SUPPLY("AVDD", NULL),
-	REGULATOR_SUPPLY("CPVDD", NULL),
-	REGULATOR_SUPPLY("PLLVDD", NULL),
+
 };
 
 /* CAM1_LDO_EN from AP GPIO KB_ROW6 R06*/
