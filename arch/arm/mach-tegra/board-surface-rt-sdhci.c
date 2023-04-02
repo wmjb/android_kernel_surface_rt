@@ -319,8 +319,8 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data3 = { //emmc
 	.power_gpio = -1,
 	.is_8bit = 1,
 	.tap_delay = 0x0F,
-	.ddr_clk_limit = 50000000,
-//	.max_clk_limit = 208000000,
+	.ddr_clk_limit = 102000000,
+	.max_clk_limit = 208000000,
 	.mmc_data = {
 		.built_in = 1,
 		.ocr_mask = MMC_OCR_1V8_MASK,
@@ -459,7 +459,7 @@ int __init surface_rt_sdhci_init(void)
 
 
 
-tegra_sdhci_platform_data2.max_clk_limit = 10200000;
+//tegra_sdhci_platform_data2.max_clk_limit = 50000000;
 
 
 	
