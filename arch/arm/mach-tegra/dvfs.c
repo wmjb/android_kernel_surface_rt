@@ -442,25 +442,31 @@ __tegra_dvfs_set_rate(struct dvfs *d, unsigned long rate)
 	if (tegra_dvfs_is_dfll_range_entry(d, rate))
 		rate = d->dfll_data.use_dfll_rate_min;
 
+#if 0
+
 	if (rate > freqs[d->num_freqs - 1]) {
 		pr_warn("tegra_dvfs: rate %lu too high for dvfs on %s\n", rate,
 			d->clk_name);
 		return -EINVAL;
 	}
 
+#endif
+
 	if (rate == 0) {
 		d->cur_millivolts = 0;
 	} else {
 		while (i < d->num_freqs && rate > freqs[i])
 			i++;
-
+#if 0
 		if ((d->max_millivolts) &&
 		    (millivolts[i] > d->max_millivolts)) {
 			pr_warn("tegra_dvfs: voltage %d too high for dvfs on"
 				" %s\n", millivolts[i], d->clk_name);
 			return -EINVAL;
 		}
-		d->cur_millivolts = millivolts[i];
+#endif
+	
+	d->cur_millivolts = millivolts[i];
 	}
 
 	d->cur_rate = rate;

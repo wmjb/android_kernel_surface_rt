@@ -46,4 +46,5 @@ int tegra_gpio_get_bank_int_nr(int gpio);
 int tegra_gpio_resume_init(void);
 int tegra_is_gpio(int);
 
+
 #endif

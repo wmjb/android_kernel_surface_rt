@@ -123,8 +123,8 @@ struct dvfs {
 	int freqs_mult;
 	unsigned long freqs[MAX_DVFS_FREQS];
 	unsigned long *alt_freqs;
-	const int *millivolts;
-	const int *dfll_millivolts;
+	unsigned int *millivolts;
+	unsigned int *dfll_millivolts;
 	struct dvfs_rail *dvfs_rail;
 	bool auto_dvfs;
 
