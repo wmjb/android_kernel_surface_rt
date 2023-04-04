@@ -481,6 +481,7 @@ mlan_dnld_fw(IN t_void * pmlan_adapter, IN pmlan_fw_image pmfw)
 	ret = wlan_check_fw_status(pmadapter, poll_num);
 	if (ret == MLAN_STATUS_SUCCESS) {
 		PRINTM(MMSG, "WLAN FW already running! Skip FW download\n");
+		MASSERT(pmlan_adapter);
 		goto done;
 	}
 	poll_num = MAX_FIRMWARE_POLL_TRIES;

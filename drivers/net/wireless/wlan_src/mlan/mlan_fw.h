@@ -201,7 +201,7 @@ typedef enum _KEY_INFO_WAPI {
 #define MRVDRV_SNAP_HEADER_LEN          8
 
 /** The number of times to try when polling for status bits */
-#define MAX_POLL_TRIES			100
+#define MAX_POLL_TRIES			1000000
 
 /** The number of times to try when waiting for downloaded firmware to
      become active when multiple interface is present */
@@ -209,7 +209,7 @@ typedef enum _KEY_INFO_WAPI {
 
 /** The number of times to try when waiting for downloaded firmware to
      become active. (polling the scratch register). */
-#define MAX_FIRMWARE_POLL_TRIES		100
+#define MAX_FIRMWARE_POLL_TRIES		150
 
 /** This is for firmware specific length */
 #define EXTRA_LEN	36
